@@ -4,8 +4,8 @@
 // @name         有谱
 // @namespace    http://tampermonkey.net/
 // @version      0.1
-// @description  try to take over the world!
-// @author       You
+// @description  下载曲谱
+// @author       leoonliang
 // @match        https://yoopu.me/view/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=bootcdn.cn
 // @require      https://cdn.bootcdn.net/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
@@ -15,35 +15,13 @@
 (function() {
     'use strict';
     const downloadBase64File = (base64Data, filename) => {
-        const blob = base64ToBlob(base64Data);
-        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.download = filename;
-        link.href = url;
+        link.href = base64Data;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
         return Promise.resolve()
-    }
-
-    const base64ToBlob = (base64Data) => {
-        const byteString = atob(base64Data.split(',')[1]);
-        const mimeString = base64Data.split(',')[0].split(':')[1].split(';')[0];
-        const ab = new ArrayBuffer(byteString.length);
-        const ia = new Uint8Array(ab);
-        for (let i = 0; i < byteString.length; i++) {
-            ia[i] = byteString.charCodeAt(i);
-        }
-        return new Blob([ab], { type: mimeString });
-    }
-    const openNewWindow = (url) => {
-        const img = new Image();
-        img.src = url; //已经拼接好的base64 未拼接则为"image/jpeg;base64," + base64
-        const newWin = window.open("", "_blank");
-        newWin.document.height = "100%";
-        newWin.document.width = "100%";
-        newWin.document.write(img.outerHTML);
-        newWin.document.close()
     }
     const htmlTocanvas = () => {
         let main = document.querySelector('.main')
@@ -103,7 +81,6 @@
     }
     window.onload = function () {
         findBtn()
-//       createBtn()
     }
     // Your code here...
 })();
